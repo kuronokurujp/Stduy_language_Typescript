@@ -100,3 +100,4 @@ tests/cases/user/prettier/prettier
 .eslintcache
 memo.md
 **/dist/*
+ts_test*/
