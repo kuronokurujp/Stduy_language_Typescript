@@ -2,34 +2,25 @@
 <html lang="ja">
     <head>
         <meta charset="utf-8">
-        <title>サイトタイトル</title>
-        <meta name="description" content="ディスクリプションを入力">
+        <title></title>
+        <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
         <!-- [if lt IE 9] -->
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
         <!-- [endif] -->
+        <!-- deferを入れる事でhtml解析後にmain.jsがロードされる-->
         <script src="main.js"></script>
+        <style>
+            <!--以下が入るとWebGLの全画面表示時にプラウザで表示していたスクロールバーが出なくなる-->
+            * {margin: 0; padding: 0;}
+            html, body {
+                overflow: hidden;
+            }
+        </style>
     </head>
     <body>
-        <!----- header----->
-        <header>ヘッダー</header>
-        <nav>ナビ</nav>
-        <!----- /header ----->
-
-        <!----- main ----->
-        <article>
-            <h1>タイトル</h1>
-            <section>
-                <h2>見出し２</h2>
-                <p>コンテンツの内容</p>
-            </section>
-        </article>
-        <!----- /main ----->
-        
-        <!----- footer ----->
-        <footer>フッター</footer>
-        <!----- /footer ----->
+        <div id="webgl_canvas"></div>
     </body>
 </html>
