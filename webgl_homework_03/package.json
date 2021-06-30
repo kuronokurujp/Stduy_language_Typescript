@@ -1,0 +1,27 @@
+{
+  "name": "webgl_homework_03",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build-dev": "webpack",
+    "build-stg": "webpack --mode production",
+    "watch": "webpack -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-loader": "^9.2.2",
+    "typescript": "^4.3.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0"
+  },
+  "dependencies": {
+    "@thi.ng/rstream-gestures": "^3.0.22",
+    "@types/dat.gui": "^0.7.6",
+    "@types/node": "^15.6.1",
+    "@types/three": "^0.128.0",
+    "three": "^0.129.0"
+  },
+  "description": ""
+}

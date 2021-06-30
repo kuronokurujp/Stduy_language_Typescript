@@ -17,9 +17,9 @@ export type TYPE_CAMERA_PARAM = {
 };
 
 /**
- * カメラパラメータ作成
+ * カメラデフォルトパラメータ作成
  */
-export function createCameraParam(): TYPE_CAMERA_PARAM {
+export function createCameraDefaultParam(): TYPE_CAMERA_PARAM {
     return {
         fovy: 45,
         aspect: window.innerWidth / window.innerHeight,
