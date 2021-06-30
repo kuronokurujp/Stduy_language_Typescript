@@ -17,12 +17,19 @@ import * as THREE from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass';
+import { GUI } from 'three/examples/jsm/libs/dat.gui.module';
 
-import { OrbitControls } from 'three-orbitcontrols-ts';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { gestureStream } from "@thi.ng/rstream-gestures";
 
 // このtsファイルからの相対パスで設定ができる
 import * as THREE_HELPER from '../../lib/threejs_helper';
+
+// webpack.configで定義した環境定義
+declare var ENV_MODE: string;
+function IsDev(): boolean {
+    return (ENV_MODE === 'development');
+}
 
 // 扇風機の羽のジオメトリ作成
 class WingGeometry extends THREE.BufferGeometry {
@@ -256,7 +263,7 @@ type ApplicationData = {
 function init(param : InitParam) : void {
     let app_data : ApplicationData = {
         click_mesh: null,
-        camera_param: THREE_HELPER.createCameraParam(),
+        camera_param: THREE_HELPER.createCameraDefaultParam(),
         directoina_light_param: THREE_HELPER.createDirectionalLightParam(),
         ambient_light_param: THREE_HELPER.createAmbientLightParam(),
         touch_object: null,
@@ -343,23 +350,20 @@ function init(param : InitParam) : void {
 
     // シーン内のカメラを制御する
     let camera_controller : any = null;
-    /*
-    camera_controller = new OrbitControls(camera, renderer.domElement);
-    // MEMO: OrbitControlsには標準にカメラズームやカメラ移動の機能があるが、ts/webpackをした事でうまく動かないみたい
-    //       回転だけできる
-    camera_controller.enableZoom = true;
-    camera_controller.zoomSpeed = 1.0;
+    if (IsDev()) {
+        camera_controller = new OrbitControls(camera, renderer.domElement);
+        camera_controller.enableZoom = true;
+        camera_controller.zoomSpeed = 1.0;
 
-    camera_controller.enablePan = true;
-    */
+        camera_controller.enablePan = true;
+
+        // 座標軸を表示
+        const axes_helper = new THREE.AxesHelper(100.0);
+        scene.add(axes_helper);
+    }
 
     // デバッグ用
     {
-        /*
-        const axes_helper = new THREE.AxesHelper(100.0);
-        scene.add(axes_helper);
-        */
-
         /*
         const wing_geometry = new WingGeometry();
         // 両面カリングの設定をする
@@ -469,6 +473,14 @@ function init(param : InitParam) : void {
         composer.addPass(render_pass);
         composer.addPass(glitch_pass);
         glitch_pass.enabled = false;
+    }
+
+    // GUI
+    if (IsDev()) {
+        const gui = new GUI();
+        const cube_folder = gui.addFolder('PostEffect');
+        cube_folder.add(glitch_pass, 'enabled', false).name('Enable Glitch');
+        cube_folder.open();
     }
 
     // 更新
@@ -599,12 +611,9 @@ function init(param : InitParam) : void {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    //console.log("lets go");
-
     const loader = new THREE.TextureLoader();
-    // これでいける？
+    // テクスチャロード
     loader.load('./image/ground.jpg', (tex: THREE.Texture) => {
-
         const init_param : InitParam = {
             ground_texture: tex,
         };

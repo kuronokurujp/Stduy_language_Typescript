@@ -18,10 +18,10 @@
   },
   "dependencies": {
     "@thi.ng/rstream-gestures": "^3.0.22",
+    "@types/dat.gui": "^0.7.6",
     "@types/node": "^15.6.1",
     "@types/three": "^0.128.0",
-    "three": "^0.129.0",
-    "three-orbitcontrols-ts": "^0.1.2"
+    "three": "^0.129.0"
   },
   "description": ""
 }
