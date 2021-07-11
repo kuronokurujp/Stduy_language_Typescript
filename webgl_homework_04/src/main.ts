@@ -1,6 +1,7 @@
 /**
  * WebGLでポリゴン描画
  */
+import { gestureStream } from "@thi.ng/rstream-gestures";
 
 /**
  * テキストファイルオブジェクト
@@ -43,6 +44,7 @@ class FileTextObject {
 
 window.addEventListener('DOMContentLoaded', async () => {
 
+    const canvas = <HTMLCanvasElement>document.getElementById('webgl_canvas')!;
     let shader_program : WebGLProgram | null = null;
 
     const vertex_file = new FileTextObject();
@@ -52,7 +54,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     let ibo_buffer : WebGLBuffer;
     let indices_count : number = 0;
     let uniform_mouse : WebGLUniformLocation;
-    let mouse : number[] = [1, 1];
+    let mouse : number[] = [0, 0];
 
     // 頂点シェーダファイルをロード
     vertex_file.Load('asset/shaders/vertex.vert')
@@ -137,10 +139,27 @@ window.addEventListener('DOMContentLoaded', async () => {
             {
                 const color_buffer = gl.createBuffer()!;
                 gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer);
-                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position), gl.STATIC_DRAW);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color), gl.STATIC_DRAW);
                 gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
                 vbo_buffers.push(color_buffer);
+            }
+
+            const offset_vec: number[] = [
+                (Math.random() * 2 - 1) * 0.5, (Math.random() * 2 - 1) * 0.5, 0.0,
+                (Math.random() * 2 - 1) * 0.5, (Math.random() * 2 - 1) * 0.5, 0.0,
+                (Math.random() * 2 - 1) * 0.5, (Math.random() * 2 - 1) * 0.5, 0.0,
+                (Math.random() * 2 - 1) * 0.5, (Math.random() * 2 - 1) * 0.5, 0.0,
+                (Math.random() * 2 - 1) * 0.5, (Math.random() * 2 - 1) * 0.5, 0.0,
+            ];
+
+            {
+                const offset_vec_buffer = gl.createBuffer()!;
+                gl.bindBuffer(gl.ARRAY_BUFFER, offset_vec_buffer);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(offset_vec), gl.STATIC_DRAW);
+                gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+                vbo_buffers.push(offset_vec_buffer);
             }
         }
 
@@ -165,10 +184,12 @@ window.addEventListener('DOMContentLoaded', async () => {
             const att_locations : GLint[] = [
                 gl.getAttribLocation(shader_program, 'position'),
                 gl.getAttribLocation(shader_program, 'color'),
+                gl.getAttribLocation(shader_program, 'offset_vec'),
             ];
             const att_stride : number[] = [
                 3,
-                4
+                4,
+                3,
             ];
 
             vbo_buffers.forEach((buffer, index) => {
@@ -187,9 +208,41 @@ window.addEventListener('DOMContentLoaded', async () => {
         {
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo_buffer);
         }
+
+        // 入力系の処理
+        {
+            let drag_pos : number[] = [0, 0];
+            gestureStream(canvas!, {preventDefault: false}).subscribe({
+                next: (e) => {
+                    switch(e.type) {
+                        // タッチ
+                        case "start": {
+                            drag_pos[0] = e.pos[0] / window.innerWidth * 2.0 - 1.0;
+                            drag_pos[1] = e.pos[1] / window.innerHeight * 2.0 - 1.0;
+
+                            break;
+                        }
+                        // タッチ後の移動
+                        case "drag": {
+                            const x = e.pos[0] / window.innerWidth * 2.0 - 1.0;
+                            const y = e.pos[1] / window.innerHeight * 2.0 - 1.0;
+
+                            mouse[0] = x - drag_pos[0];
+                            mouse[1] = y - drag_pos[1];
+
+                            break;
+                        }
+                        // タッチして離れる
+                        case "end": {
+                            mouse[0] = mouse[1] = 0;
+                            break;
+                        }
+                    }
+                },
+            });
+        }
     });
 
-    const canvas = <HTMLCanvasElement>document.getElementById('webgl_canvas')!;
     const gl = canvas.getContext('webgl')!;
 
     // 毎フレーム実行
