@@ -12,8 +12,9 @@
         <!-- [endif] -->
         <!-- deferを入れる事でhtml解析後にmain.jsがロードされる-->
         <script src="main.js"></script>
+
+        <!--以下が入るとWebGLの全画面表示時にプラウザで表示していたスクロールバーが出なくなる-->
         <style>
-            <!--以下が入るとWebGLの全画面表示時にプラウザで表示していたスクロールバーが出なくなる-->
             * {margin: 0; padding: 0;}
             html, body {
                 overflow: hidden;

@@ -1,0 +1,20 @@
+{
+  "name": "webgl_homework_04",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build-dev": "webpack",
+    "build-stg": "webpack --mode production",
+    "watch": "webpack -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-loader": "^9.2.2",
+    "typescript": "^4.3.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0"
+  },
+  "description": ""
+}
