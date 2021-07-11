@@ -1,6 +1,8 @@
 /**
  * WebGLでポリゴン描画
  */
+
+import * as WEBPACK_HELPER from '../../lib/webpack_helper';
 import { gestureStream } from "@thi.ng/rstream-gestures";
 
 /**
@@ -63,8 +65,10 @@ window.addEventListener('DOMContentLoaded', async () => {
         return fragment_file.Load('asset/shaders/fragment.frag');
     })
     .then((fragment_text: string) => {
-        console.log('vertex text => ' + vertex_file.Text());
-        console.log('fragment text => ' + fragment_file.Text());
+        if (WEBPACK_HELPER.IsDev()) {
+            console.log('vertex text => ' + vertex_file.Text());
+            console.log('fragment text => ' + fragment_file.Text());
+        }
 
         // 頂点シェーダを生成
         let vs : WebGLShader;
